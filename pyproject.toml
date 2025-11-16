@@ -1,0 +1,29 @@
+[project]
+name = "powerview"
+version = "0.1.0"
+description = "Electricity comsumption analysis"
+authors = [
+    {name = "Sune Fibaek",email = "fibaek@proton.me"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas (>=2.3.3,<3.0.0)"
+]
+
+[project.urls]
+repository = "https://github.com/sunefibaek/powerview"
+documentation = "https://sunefibaek.github.io/powerview/"
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.1"
+ruff = "^0.14.5"
+mkdocs = "^1.6.1"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
