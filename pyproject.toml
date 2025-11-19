@@ -9,7 +9,10 @@ license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "pandas (>=2.3.3,<3.0.0)"
+    "pandas (>=2.3.3,<3.0.0)",
+    "requests (>=2.32.5,<3.0.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "duckdb (>=1.4.2,<2.0.0)"
 ]
 
 [project.urls]
@@ -23,6 +26,31 @@ package-mode = false
 pytest = "^9.0.1"
 ruff = "^0.14.5"
 mkdocs = "^1.6.1"
+mkdocstrings-python = "^1.19.0"
+mkdocs-material = "^9.7.0"
+pre-commit = "^3.8.0"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # Pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+]
+ignore = []
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
