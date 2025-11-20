@@ -100,7 +100,7 @@ def get_meter_data_with_retry(
             if e.response.status_code in (429, 503):
                 retries += 1
                 if retries >= max_retries:
-                    logger.error(f"Max retries exceeded for date range {date_from} to {date_to}")
+                    logger.error("Max retries exceeded for date range %s to %s", date_from, date_to)
                     raise
                 wait_time = 60
                 logger.warning(
