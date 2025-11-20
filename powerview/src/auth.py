@@ -22,6 +22,7 @@ def get_access_token(refresh_token: str) -> str:
 
     Raises:
         requests.HTTPError: If the token exchange fails.
+        KeyError: If the API response doesn't contain the expected "result" field.
     """
     url = "https://api.eloverblik.dk/CustomerApi/api/token"
     headers = {"Authorization": f"Bearer {refresh_token}"}
