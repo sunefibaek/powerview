@@ -104,8 +104,9 @@ def get_meter_data_with_retry(
                     raise
                 wait_time = 60
                 logger.warning(
-                    f"Rate limited or service unavailable. "
-                    f"Waiting {wait_time}s before retry {retries}/{max_retries}"
+                    "Rate limited or service unavailable. "
+                    "Waiting %ss before retry %s/%s",
+                    wait_time, retries, max_retries
                 )
                 time.sleep(wait_time)
             else:
