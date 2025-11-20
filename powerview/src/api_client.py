@@ -61,7 +61,7 @@ def get_meter_data(access_token: str, date_from: str, date_to: str) -> dict:
         "dateTo": date_to,
     }
 
-    logger.info(f"Requesting meter data from {date_from} to {date_to}")
+    logger.info("Requesting meter data from %s to %s", date_from, date_to)
     response = requests.post(url, headers=headers, json=payload)
     response.raise_for_status()
 
