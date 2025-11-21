@@ -81,6 +81,7 @@ def main() -> None:
                         access_token,
                         chunk_from.isoformat(),
                         chunk_to.isoformat(),
+                        metering_point_ids=[mp_id],
                     )
 
                     # Normalize

@@ -88,16 +88,19 @@ class TestGetMeterData:
         }
         mock_post.return_value = mock_response
 
-        result = get_meter_data("test_token", "2025-01-01", "2025-01-31")
+        result = get_meter_data(
+            "test_token", "2025-01-01", "2025-01-31", metering_point_ids=["123456789012345678"]
+        )
 
         assert "result" in result
         mock_post.assert_called_once()
         call_args = mock_post.call_args
         assert (
-            call_args[0][0] == "https://api.eloverblik.dk/CustomerApi/api/meterdata/gettimeseries"
+            call_args[0][0]
+            == "https://api.eloverblik.dk/CustomerApi/api/meterdata/gettimeseries/2025-01-01/2025-01-31/Hour"
         )
-        assert call_args[1]["json"]["dateFrom"] == "2025-01-01"
-        assert call_args[1]["json"]["dateTo"] == "2025-01-31"
+        assert call_args[1]["json"]["meteringPoints"]["meteringPoint"] == ["123456789012345678"]
+        assert call_args[1]["headers"]["api-version"] == "1.0"
 
     @patch("powerview.src.api_client.requests.post")
     def test_get_meter_data_http_error(self, mock_post):
@@ -107,7 +110,9 @@ class TestGetMeterData:
         mock_post.return_value = mock_response
 
         with pytest.raises(requests.HTTPError):
-            get_meter_data("test_token", "2025-01-01", "2025-01-31")
+            get_meter_data(
+                "test_token", "2025-01-01", "2025-01-31", metering_point_ids=["123456789012345678"]
+            )
 
 
 class TestGetMeterDataWithRetry:
