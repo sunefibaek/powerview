@@ -140,8 +140,8 @@ def normalize_api_response(api_response: dict, metering_point_ids: dict) -> list
                     for point in period.get("Point", []):
                         try:
                             position = int(point.get("position", 0))
-                            value = float(point.get("out_Quantity", {}).get("quantity", 0))
-                            quality = point.get("out_Quantity", {}).get("quality", "")
+                            value = float(point.get("out_Quantity.quantity", 0))
+                            quality = point.get("out_Quantity.quality", "")
 
                             # Calculate timestamp: start + (position - 1) hours
                             timestamp = period_start + timedelta(hours=position - 1)

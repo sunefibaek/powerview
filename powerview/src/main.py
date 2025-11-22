@@ -71,6 +71,9 @@ def main() -> None:
             # Chunk large date ranges
             chunks = chunk_date_range(date_from, date_to, chunk_days=90)
 
+            # Track if any chunk succeeded for this metering point
+            chunk_success = False
+
             # Extract data for each chunk
             for chunk_from, chunk_to in chunks:
                 logger.info("Fetching data from %s to %s", chunk_from, chunk_to)
@@ -90,6 +93,9 @@ def main() -> None:
                     # Save to Parquet
                     save_to_parquet(records, config["data_storage_path"])
 
+                    # Mark this metering point as having successful chunk
+                    chunk_success = True
+
                 except Exception as e:
                     logger.error(
                         "Failed to fetch/process data for chunk %s to %s: %s",
@@ -99,9 +105,17 @@ def main() -> None:
                     )
                     continue
 
-            # Update state
-            update_last_ingestion_date(mp_id, date_to, config["state_db_path"])
-            logger.info("Completed processing for %s", mp_name)
+            # Only update state if at least one chunk succeeded for this metering point
+            if chunk_success:
+                update_last_ingestion_date(mp_id, date_to, config["state_db_path"])
+                logger.info("Completed processing for %s", mp_name)
+            else:
+                logger.warning(
+                    "No chunks succeeded for %s (%s). State not updated. "
+                    "Will retry from same date range on next run.",
+                    mp_name,
+                    mp_id,
+                )
 
         except Exception as e:
             logger.error("Failed to process %s: %s", mp_name, e)

@@ -125,11 +125,12 @@ def save_to_parquet(records: list[dict], base_path: str = "./data") -> None:
     """
     Save normalized records to partitioned Parquet files.
 
-    Files are partitioned by metering_point_id and ingestion_date for efficient
+    Files are partitioned by metering_point_id and consumption date for efficient
     querying. If a file already exists, duplicate timestamps are replaced with
     new data (upsert strategy).
 
     Partition structure: /data/metering_point=<ID>/date=<YYYY-MM-DD>/consumption_data.parquet
+    where date is the consumption date extracted from the timestamp.
 
     Args:
         records: List of normalized record dicts.
@@ -144,11 +145,18 @@ def save_to_parquet(records: list[dict], base_path: str = "./data") -> None:
 
     df = pd.DataFrame(records)
 
-    # Group by metering point and date
-    for (mp_id, ingestion_date), group_df in df.groupby(["metering_point_id", "ingestion_date"]):
+    # Extract consumption date from timestamp for partitioning
+    df["consumption_date"] = df["timestamp"].dt.date
+
+    # Group by metering point and consumption date
+    for (mp_id, consumption_date), group_df in df.groupby(
+        ["metering_point_id", "consumption_date"]
+    ):
         try:
             # Create partitioned directory structure
-            partition_path = Path(base_path) / f"metering_point={mp_id}" / f"date={ingestion_date}"
+            partition_path = (
+                Path(base_path) / f"metering_point={mp_id}" / f"date={consumption_date}"
+            )
             partition_path.mkdir(parents=True, exist_ok=True)
 
             file_path = partition_path / "consumption_data.parquet"
@@ -165,9 +173,12 @@ def save_to_parquet(records: list[dict], base_path: str = "./data") -> None:
             else:
                 combined_df = group_df.sort_values("timestamp")
 
+            # Drop the temporary consumption_date column before saving
+            combined_df = combined_df.drop(columns=["consumption_date"])
+
             combined_df.to_parquet(file_path, engine="pyarrow", compression="snappy", index=False)
 
             logger.info("Wrote %d records to %s", len(combined_df), file_path)
         except Exception as e:
-            logger.error("Failed to write Parquet file for %s/%s: %s", mp_id, ingestion_date, e)
+            logger.error("Failed to write Parquet file for %s/%s: %s", mp_id, consumption_date, e)
             raise
