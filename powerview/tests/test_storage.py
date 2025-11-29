@@ -124,7 +124,8 @@ class TestSaveToParquet:
 
     def test_save_to_parquet_no_records(self, tmp_path):
         """Test saving with no records."""
-        save_to_parquet([], str(tmp_path))
+        with patch("powerview.src.config.load_config"):
+            save_to_parquet([], str(tmp_path))
 
         # Should create no files
         files = list(tmp_path.glob("**/*.parquet"))
@@ -147,7 +148,7 @@ class TestSaveToParquet:
             },
             {
                 "metering_point_id": "571313113150035634",
-                "timestamp": now + timedelta(hours=1),
+                "timestamp": now + timedelta(minutes=1),
                 "consumption_value": 0.6,
                 "quality": "A04",
                 "unit": "kWh",

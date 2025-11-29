@@ -4,8 +4,9 @@ import logging
 from datetime import date
 from pathlib import Path
 
-import duckdb
 import pandas as pd
+
+import duckdb
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +122,7 @@ def update_last_ingestion_date(
 # Parquet File I/O Functions
 
 
-def save_to_parquet(records: list[dict], base_path: str = "./data") -> None:
+def save_to_parquet(records: list[dict], base_path: str | None = None) -> None:
     """
     Save normalized records to partitioned Parquet files.
 
@@ -134,11 +135,19 @@ def save_to_parquet(records: list[dict], base_path: str = "./data") -> None:
 
     Args:
         records: List of normalized record dicts.
-        base_path: Base directory for storing Parquet files.
+        base_path: Base directory for storing Parquet files. If None, uses
+                   `data_storage_path` from config. Defaults to None.
 
     Raises:
         Exception: If write operation fails.
     """
+
+    if base_path is None:
+        from powerview.src.config import load_config
+
+        config = load_config()
+        base_path = config["data_storage_path"]
+
     if not records:
         logger.info("No records to save")
         return
