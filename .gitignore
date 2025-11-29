@@ -115,3 +115,5 @@ cython_debug/
 # Custom instructions folder
 instructions/
 
+# Analytics database
+/duckdb/analytics.duckdb

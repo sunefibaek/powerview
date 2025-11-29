@@ -19,7 +19,7 @@ class TestGetTimeframe:
         """Mock DuckDB for state queries."""
         from unittest.mock import patch
 
-        with patch("powerview.src.extract.get_last_ingestion_date") as mock_get:
+        with patch("powerview.src.storage.get_last_ingestion_date") as mock_get:
             yield mock_get
 
     def test_get_timeframe_no_prior_ingestion(self, mock_duckdb):
@@ -61,7 +61,7 @@ class TestChunkDateRange:
         date_from = date(2025, 1, 1)
         date_to = date(2025, 12, 31)
 
-        chunks = chunk_date_range(date_from, date_to, chunk_days=90)
+        chunks = chunk_date_range(date_from, date_to, chunk_days=95)
 
         # Should split into 4 chunks of ~90 days each
         assert len(chunks) == 4

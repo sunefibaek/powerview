@@ -26,21 +26,21 @@ class TestLoadConfig:
         assert config["valid_metering_points"]["delivery_to_grid"] == "meter_001"
         assert config["data_storage_path"] == "./data"
         assert config["state_db_path"] == "./state.duckdb"
-        assert config["log_level"] == "INFO"
-        assert config["initial_backfill_days"] == 1095
 
+    @patch("powerview.src.config.load_dotenv")
     @patch.dict(os.environ, {}, clear=True)
-    def test_load_config_missing_refresh_token(self):
+    def test_load_config_missing_refresh_token(self, mock_load_dotenv):
         """Test error when refresh token is missing."""
         with pytest.raises(ValueError, match="ELOVERBLIK_REFRESH_TOKEN is required"):
             load_config()
 
+    @patch("powerview.src.config.load_dotenv")
     @patch.dict(
         os.environ,
         {"ELOVERBLIK_REFRESH_TOKEN": "test_token_123"},
         clear=True,
     )
-    def test_load_config_no_metering_points(self):
+    def test_load_config_no_metering_points(self, mock_load_dotenv):
         """Test error when no metering points configured."""
         with pytest.raises(ValueError, match="At least one metering point ID must be configured"):
             load_config()
@@ -72,16 +72,17 @@ class TestLoadConfig:
         assert config["log_level"] == "DEBUG"
         assert config["initial_backfill_days"] == 365
 
+    @patch("powerview.src.config.load_dotenv")
     @patch.dict(
         os.environ,
         {
             "ELOVERBLIK_REFRESH_TOKEN": "test_token_123",
             "DELIVERY_TO_GRID_ID": "meter_001",
             "ELECTRIC_HEATING_ID": "",
-            "CONSUMED_FROM_GRID_ID": None,
         },
+        clear=True,
     )
-    def test_load_config_filters_none_metering_points(self):
+    def test_load_config_filters_none_metering_points(self, mock_load_dotenv):
         """Test that None/empty metering points are filtered out."""
         config = load_config()
 

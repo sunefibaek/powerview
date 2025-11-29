@@ -46,10 +46,8 @@ def load_config() -> dict:
         logger.error("ELOVERBLIK_REFRESH_TOKEN is required")
         raise ValueError("ELOVERBLIK_REFRESH_TOKEN is required")
 
-    # Filter out None metering point IDs
-    config["valid_metering_points"] = {
-        k: v for k, v in config["metering_point_ids"].items() if v is not None
-    }
+    # Filter out None and empty metering point IDs
+    config["valid_metering_points"] = {k: v for k, v in config["metering_point_ids"].items() if v}
 
     if not config["valid_metering_points"]:
         logger.error("At least one metering point ID must be configured")
