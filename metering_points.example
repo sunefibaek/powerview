@@ -1,0 +1,18 @@
+metering_points:
+  "123234345":
+    name: Solar Export
+    type: production
+    location: Home
+    description: Electricity delivered to grid from solar panels
+
+  "234345456":
+    name: Grid Import
+    type: consumption
+    location: Home
+    description: Electricity consumed from grid
+
+  "345456567":
+    name: Home Total
+    type: consumption
+    location: Home
+    description: Total household consumption

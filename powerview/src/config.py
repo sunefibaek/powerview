@@ -28,6 +28,7 @@ def load_config() -> dict:
     config = {
         "refresh_token": os.getenv("ELOVERBLIK_REFRESH_TOKEN"),
         "metering_point_ids": {
+            # TODO ensure that names from .env are specified and not hardcoded here
             "delivery_to_grid": os.getenv("DELIVERY_TO_GRID_ID"),
             "electric_heating": os.getenv("ELECTRIC_HEATING_ID"),
             "consumed_from_grid": os.getenv("CONSUMED_FROM_GRID_ID"),
@@ -36,6 +37,7 @@ def load_config() -> dict:
             "sommerhus_meter": os.getenv("SOMMERHUS_METER_ID"),
         },
         "data_storage_path": os.getenv("DATA_STORAGE_PATH", "./data"),
+        # TODO add analytics database path
         "state_db_path": os.getenv("STATE_DB_PATH", "./state.duckdb"),
         "log_level": os.getenv("LOG_LEVEL", "INFO"),
         "initial_backfill_days": int(os.getenv("INITIAL_BACKFILL_DAYS", "1095")),
