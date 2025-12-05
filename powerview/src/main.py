@@ -88,7 +88,8 @@ def main() -> None:
                     )
 
                     # Normalize
-                    records = normalize_api_response(api_response, config["metering_point_ids"])
+
+                    records = normalize_api_response(api_response, config["valid_metering_points"])
 
                     # Save to Parquet
                     save_to_parquet(records, config["data_storage_path"])

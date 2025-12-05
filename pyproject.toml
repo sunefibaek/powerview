@@ -47,7 +47,7 @@ select = [
 ignore = []
 
 [tool.ruff.lint.isort]
-known-first-party = ["powerview"]
+known-first-party = ["src"]
 
 [tool.ruff.format]
 quote-style = "double"
