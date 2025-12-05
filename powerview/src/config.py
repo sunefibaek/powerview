@@ -77,7 +77,10 @@ def load_metering_points(file_path: str | None = None) -> dict[str, dict[str, An
         raise ValueError(f"Metering points file not found: {resolved_path}")
 
     with resolved_path.open("r", encoding="utf-8") as handle:
-        raw_data = yaml.safe_load(handle) or {}
+        try:
+            raw_data = yaml.safe_load(handle) or {}
+        except yaml.YAMLError as e:
+            raise ValueError(f"Failed to parse YAML file {resolved_path}: {e}") from e
 
     if "metering_points" not in raw_data:
         raise ValueError("Metering points file is missing the required 'metering_points' key")
