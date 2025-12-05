@@ -79,9 +79,11 @@ def load_metering_points(file_path: str | None = None) -> dict[str, dict[str, An
     with resolved_path.open("r", encoding="utf-8") as handle:
         raw_data = yaml.safe_load(handle) or {}
 
-    metering_points_data = raw_data.get("metering_points")
+    if "metering_points" not in raw_data:
+        raise ValueError("Metering points file is missing the required 'metering_points' key")
+    metering_points_data = raw_data["metering_points"]
     if not isinstance(metering_points_data, dict):
-        raise ValueError("Metering points file must contain a 'metering_points' mapping")
+        raise ValueError("The 'metering_points' key must map to a dictionary (mapping) of metering points")
 
     normalized: dict[str, dict[str, Any]] = {}
     for mp_id, metadata in metering_points_data.items():
