@@ -100,10 +100,8 @@ try:
                                     "Point": [
                                         {
                                             "position": "1",
-                                            "out_Quantity": {
-                                                "quantity": "1.5",
-                                                "quality": "A01",
-                                            },
+                                            "out_Quantity.quantity": "1.5",
+                                            "out_Quantity.quality": "A01",
                                         }
                                     ],
                                 }
