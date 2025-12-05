@@ -63,6 +63,9 @@ Pipfile.lock
 # VS Code
 .vscode/
 
+# Jetbrains
+.idea/
+
 # Environment variables
 .env
 
