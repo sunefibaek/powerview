@@ -86,7 +86,9 @@ def load_metering_points(file_path: str | None = None) -> dict[str, dict[str, An
         raise ValueError("Metering points file is missing the required 'metering_points' key")
     metering_points_data = raw_data["metering_points"]
     if not isinstance(metering_points_data, dict):
-        raise ValueError("The 'metering_points' key must map to a dictionary (mapping) of metering points")
+        raise ValueError(
+            "The 'metering_points' key must map to a dictionary (mapping) of metering points"
+        )
 
     normalized: dict[str, dict[str, Any]] = {}
     for mp_id, metadata in metering_points_data.items():
@@ -98,7 +100,8 @@ def load_metering_points(file_path: str | None = None) -> dict[str, dict[str, An
             metadata = {}
         elif not isinstance(metadata, dict):
             raise ValueError(
-                f"Metadata for metering point '{mp_id_str}' must be a mapping (dict), got {type(metadata).__name__}"
+                f"Metadata for metering point '{mp_id_str}' must be a mapping (dict), "
+                f"got {type(metadata).__name__}"
             )
 
         name = metadata.get("name") or mp_id_str

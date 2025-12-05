@@ -5,7 +5,12 @@ from unittest.mock import patch
 
 import pytest
 
-from powerview.src.config import load_config
+from powerview.src.config import (
+    _normalize_path,
+    _resolve_metering_points_path,
+    load_config,
+    load_metering_points,
+)
 
 
 class TestLoadConfig:
@@ -129,3 +134,49 @@ class TestLoadConfig:
             config = load_config()
 
         assert config["valid_metering_points"]["meter_001"] == "meter_001"
+
+
+class TestConfigHelpers:
+    """Basic coverage for helper utilities."""
+
+    def test_load_metering_points_basic(self, tmp_path):
+        file_path = tmp_path / "metering_points.yml"
+        file_path.write_text(
+            """
+            metering_points:
+              "meter_001":
+                name: Solar Export
+                location: Home
+            """,
+            encoding="utf-8",
+        )
+
+        result = load_metering_points(str(file_path))
+
+        assert "meter_001" in result
+        assert result["meter_001"]["name"] == "Solar Export"
+        assert result["meter_001"]["id"] == "meter_001"
+
+    def test_normalize_path_relative_and_absolute(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        rel_result = _normalize_path("configs/metering_points.yml")
+        assert rel_result == (tmp_path / "configs" / "metering_points.yml").resolve()
+
+        abs_path = tmp_path / "absolute.yml"
+        abs_result = _normalize_path(abs_path)
+        assert abs_result == abs_path.resolve()
+
+    def test_resolve_metering_points_respects_env_override(self, tmp_path, monkeypatch):
+        custom_file = tmp_path / "custom.yml"
+        custom_file.write_text(
+            """
+            metering_points:
+              "meter_001": {}
+            """,
+            encoding="utf-8",
+        )
+
+        monkeypatch.setenv("METERING_POINTS_FILE", str(custom_file))
+        resolved_path = _resolve_metering_points_path()
+
+        assert resolved_path == custom_file.resolve()
