@@ -1,5 +1,6 @@
 """API client module for Eloverblik API."""
 
+import json
 import logging
 import time
 
@@ -31,37 +32,43 @@ def get_metering_points(access_token: str) -> dict:
     return response.json()
 
 
-def get_meter_data(access_token: str, date_from: str, date_to: str) -> dict:
+def get_meter_data(
+    access_token: str, date_from: str, date_to: str, metering_point_ids: list[str] | None = None
+) -> dict:
     """
-    Retrieve meter data for the specified date range.
-
-    Important: The API returns data for ALL metering points available to the
-    authenticated user, not just the ones specified. The extraction pipeline
-    filters results to extract only the tracked metering points.
+    Retrieve meter data for the specified date range with hourly aggregation.
 
     Args:
         access_token: The access token from get_access_token().
         date_from: Start date in "YYYY-MM-DD" format.
         date_to: End date in "YYYY-MM-DD" format.
+        metering_point_ids: List of metering point IDs to fetch. If None or empty,
+                           API will return data for all available metering points.
 
     Returns:
-        Dictionary containing meter data for all available metering points.
+        Dictionary containing meter data for requested metering points.
 
     Raises:
         requests.HTTPError: If the request fails.
     """
-    url = "https://api.eloverblik.dk/CustomerApi/api/meterdata/gettimeseries"
+    url = f"https://api.eloverblik.dk/CustomerApi/api/meterdata/gettimeseries/{date_from}/{date_to}/Hour"
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json",
+        "api-version": "1.0",
     }
     payload = {
-        "meteringPoints": {"meteringPoint": []},
-        "dateFrom": date_from,
-        "dateTo": date_to,
+        "meteringPoints": {"meteringPoint": metering_point_ids or []},
     }
 
-    logger.info("Requesting meter data from %s to %s", date_from, date_to)
+    logger.info("Requesting meter data from %s to %s with Hour aggregation", date_from, date_to)
+
+    # Debug: Print curl equivalent command
+    headers_str = " ".join([f'-H "{k}: {v}"' for k, v in headers.items()])
+    payload_str = json.dumps(payload)
+    curl_command = f"curl -X 'POST' '{url}' {headers_str} -d '{payload_str}'"
+    logger.debug("Equivalent curl command:\n%s", curl_command)
+
     response = requests.post(url, headers=headers, json=payload)
     response.raise_for_status()
 
@@ -72,6 +79,7 @@ def get_meter_data_with_retry(
     access_token: str,
     date_from: str,
     date_to: str,
+    metering_point_ids: list[str] | None = None,
     max_retries: int = 3,
 ) -> dict:
     """
@@ -84,6 +92,8 @@ def get_meter_data_with_retry(
         access_token: The access token.
         date_from: Start date in "YYYY-MM-DD" format.
         date_to: End date in "YYYY-MM-DD" format.
+        metering_point_ids: List of metering point IDs to fetch. If None or empty,
+                           API will return data for all available metering points.
         max_retries: Maximum number of retries (default: 3).
 
     Returns:
@@ -95,7 +105,7 @@ def get_meter_data_with_retry(
     retries = 0
     while retries < max_retries:
         try:
-            return get_meter_data(access_token, date_from, date_to)
+            return get_meter_data(access_token, date_from, date_to, metering_point_ids)
         except requests.exceptions.HTTPError as e:
             if e.response.status_code in (429, 503):
                 retries += 1
@@ -104,9 +114,10 @@ def get_meter_data_with_retry(
                     raise
                 wait_time = 60
                 logger.warning(
-                    "Rate limited or service unavailable. "
-                    "Waiting %ss before retry %s/%s",
-                    wait_time, retries, max_retries
+                    "Rate limited or service unavailable. Waiting %ss before retry %s/%s",
+                    wait_time,
+                    retries,
+                    max_retries,
                 )
                 time.sleep(wait_time)
             else:

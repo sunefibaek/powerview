@@ -28,7 +28,7 @@ def get_access_token(refresh_token: str) -> str:
     headers = {"Authorization": f"Bearer {refresh_token}"}
 
     logger.info("Requesting access token from Eloverblik API")
-    response = requests.post(url, headers=headers)
+    response = requests.get(url, headers=headers)
     response.raise_for_status()
 
     token = response.json()["result"]
