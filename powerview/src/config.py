@@ -94,10 +94,9 @@ def load_metering_points(file_path: str | None = None) -> dict[str, dict[str, An
         if metadata is None:
             metadata = {}
         elif not isinstance(metadata, dict):
-            logger.warning(
-                "Ignoring metering point %s because metadata is not a mapping", mp_id_str
+            raise ValueError(
+                f"Metadata for metering point '{mp_id_str}' must be a mapping (dict), got {type(metadata).__name__}"
             )
-            metadata = {}
 
         name = metadata.get("name") or mp_id_str
         normalized[mp_id_str] = {**metadata, "id": mp_id_str, "name": name}
