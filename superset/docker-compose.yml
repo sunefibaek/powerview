@@ -11,6 +11,7 @@ services:
       - superset_data:/app/superset_home
       - ../data:/app/external_data # Change according to setting in the .env file
       - ../duckdb:/app/duckdb # Change according to setting in the .env file
+      - ../../powerview:/app/powerview # Mount the powerview code for development
     environment:
       - SUPERSET_LOAD_EXAMPLES=no
       - DATABASE_DB=superset

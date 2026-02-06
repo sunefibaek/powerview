@@ -137,7 +137,7 @@ def load_config() -> dict:
         "metering_points": metering_points,
         "metering_point_ids": dict(metering_point_ids),
         "data_storage_path": os.getenv("DATA_STORAGE_PATH", "./data"),
-        # TODO add analytics database path
+        "analytics_db_path": os.getenv("ANALYTICS_DB_PATH", "./duckdb/analytics.duckdb"),
         "state_db_path": os.getenv("STATE_DB_PATH", "./state.duckdb"),
         "log_level": os.getenv("LOG_LEVEL", "INFO"),
         "initial_backfill_days": int(os.getenv("INITIAL_BACKFILL_DAYS", "1095")),
