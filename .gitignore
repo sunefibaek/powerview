@@ -71,6 +71,7 @@ Pipfile.lock
 
 # Custom instructions folder
 instructions/
+powerview/docs/
 
 # Analytics database
 /duckdb/analytics.duckdb
@@ -83,3 +84,4 @@ instructions/
 
 # Various DBs
 *.duckdb
+*.duckdb.example
