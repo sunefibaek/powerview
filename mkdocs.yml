@@ -25,4 +25,5 @@ nav:
   - Getting started: getting-started.md
   - Data and storage: data-and-storage.md
   - Superset: superset.md
-  - Development: development.md
+#   - Development: development.md
+  - Reference: reference.md

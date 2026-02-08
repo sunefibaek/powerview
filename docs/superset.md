@@ -2,15 +2,53 @@
 
 Superset runs via Docker Compose in the superset/ directory.
 
-## Start
+## Setup
+
+1) Copy the example env file and set a password.
 
 ```bash
-docker compose up
+cp superset/.env.example superset/.env
 ```
 
-## Port
+2) Start containers.
 
-Superset is exposed on http://localhost:8088.
+```bash
+cd superset
+docker compose up -d
+```
+
+3) Initialize the Superset database and admin user.
+
+```bash
+docker exec -it powerview superset db upgrade
+docker exec -it powerview superset fab create-admin \
+	--username admin \
+	--firstname Admin \
+	--lastname User \
+	--email admin@superset.com \
+	--password admin
+docker exec -it powerview superset init
+```
+
+## Access
+
+Open http://localhost:8088 and sign in with the credentials you created.
+
+## Connect to DuckDB
+
+1) In Superset, go to **Settings → Database Connections → + Database**.
+2) Select **DuckDB**.
+3) Use the SQLAlchemy URI below.
+
+```
+duckdb:////app/duckdb/analytics.duckdb
+```
+
+If you want to query Parquet directly, use:
+
+```
+duckdb:////app/external_data
+```
 
 ## Environment
 

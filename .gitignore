@@ -85,3 +85,9 @@ powerview/docs/
 # Various DBs
 *.duckdb
 *.duckdb.example
+
+# MkDocs site output
+/site/
+
+# Ruff
+.ruff_cache/
