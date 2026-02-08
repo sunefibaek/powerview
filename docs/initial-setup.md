@@ -1,0 +1,1 @@
+Initial setup requires an API key from Eloverblik. This can be created by signing in with MitID and navigating to API Access in the menu in the top right corner. Click create token, give the key a name. Copy the token into the .env file. You will only be able to see the key after you close the modal!
