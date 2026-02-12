@@ -1,8 +1,9 @@
 # powerview
-Powerview is a tool to analyze electricity consumption with data from the Danish public API supplied by [Eloverblik]]https://eloverblik.dk/) and can be used by anayone on the Danish Energinet grid.\
-The data is collected, stored in parquet files, and prepared for analysis with [Apache Superset](https://superset.apache.org/) in a [DuckDB](https://duckdb.org/) database.
+Powerview is a tool to analyze electricity consumption with data from the Danish public API supplied by [Eloverblik](https://eloverblik.dk/) and can be used by anayone on the Danish Energinet grid.\
+The data is collected, stored in parquet files, and prepared for analysis in a DuckDB database with relevant views on top of the Parquet files.\
+An [Apache Superset](https://superset.apache.org/) configuration (docker-compose, dockerfile) is included in the project. An tool that can consume data from DuckDB or Parquet can be used.\
+For full documentation go to [sunefibaek.github.io/powerview/](https://sunefibaek.github.io/powerview/).\
 ## Quick Start Guide
-See the full guide for detailed setup.
 ### Data collection
 #### Clone the repo
 ```bash
