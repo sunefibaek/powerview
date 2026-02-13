@@ -20,14 +20,14 @@ docker compose up -d
 3) Initialize the Superset database and admin user.
 
 ```bash
-docker exec -it powerview superset db upgrade
-docker exec -it powerview superset fab create-admin \
+docker compose exec superset superset db upgrade
+docker compose exec superset superset fab create-admin \
 	--username admin \
 	--firstname Admin \
 	--lastname User \
 	--email admin@superset.com \
 	--password admin
-docker exec -it powerview superset init
+docker compose exec superset superset init
 ```
 
 ## Access

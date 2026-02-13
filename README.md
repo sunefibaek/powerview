@@ -1,5 +1,5 @@
 # powerview
-Powerview is a tool to analyze electricity consumption with data from the Danish public API supplied by [Eloverblik](https://eloverblik.dk/) and can be used by anayone on the Danish Energinet grid.\
+Powerview is a tool to analyze electricity consumption with data from the Danish public API supplied by [Eloverblik](https://eloverblik.dk/) and can be used by anyone on the Danish Energinet grid.\
 The data is collected, stored in parquet files, and prepared for analysis in a DuckDB database with relevant views on top of the Parquet files.\
 An [Apache Superset](https://superset.apache.org/) configuration (docker-compose, dockerfile) is included in the project. An tool that can consume data from DuckDB or Parquet can be used.\
 For full documentation go to [sunefibaek.github.io/powerview/](https://sunefibaek.github.io/powerview/).\
@@ -10,8 +10,8 @@ For full documentation go to [sunefibaek.github.io/powerview/](https://sunefibae
 git clone sunefibaek/powerview
 ```
 #### Initial Setup
-Copy .env.sample to .env and insert your API key from Eloverblik. The key can be created by signing in with MitID and generating a key.\
-Copy the file metering_points.example to meterings_points.yml and insert the required metering point IDs in the file. Fill in `name`, `type`, `location`, and `description`. These fields are not used directly but are made available in the reporting layer.
+Copy .env.example to .env and insert your API key from Eloverblik. The key can be created by signing in with MitID and generating a key.\
+Copy the file metering_points.yml.example to metering_points.yml and insert the required metering point IDs in the file. Fill in `name`, `type`, `location`, and `description`. These fields are not used directly but are made available in the reporting layer.
 #### Backfill
 The first run is used for back filling data. The amount of data fetched initially is defaulted to 90 days. The value can be changed in `.env` in the `INITIAL_BACKFILL_DAYS=90` parameter. The API has a cap of 730 days.\
 The run might take a fair bit of time depending on the amount of days.
@@ -34,13 +34,13 @@ poetry run python create_analytics_db.py
 ```
 This will create `analytics.duckdb` in `./duckdb`.
 #### Initialize Superset
-Rename ./superset/.env.example to .env and update the passqwords in the file.
+Rename ./superset/.env.example to .env and update the passwords in the file.
 Cd into the superset directory and run
 ```bash
 docker compose up -d
 ```
 to start the Superset docker container.
-Run each of these steps to initialize superset within the container:
+Run each of these steps to initialize Superset within the container:
 ```bash
 # Initialize the database
 docker exec -it superset superset db upgrade
@@ -58,9 +58,9 @@ docker exec -it superset superset fab create-admin \
 # Initialize Superset
 docker exec -it superset superset init
 ```
-Navigate to [http://localhost:8088/](http://localhost:8088/) and sign into superset with the credentials created above (admin:admin if not changed).
+Navigate to [http://localhost:8088/](http://localhost:8088/) and sign into Superset with the credentials created above (admin:admin if not changed).
 #### Connect to DuckDB
-IN superset navigate to settings -> database connections -> add database. Select DuckDB on the dropdown and connect to `duckdb:////app/duckdb/analytics.duckdb`.
+In Superset navigate to Settings -> Database Connections -> Add Database. Select DuckDB from the dropdown menu and connect to `duckdb:////app/duckdb/analytics.duckdb`.
 #### Create dashboards
 Starting building dashboards.
 ### API Documentation
