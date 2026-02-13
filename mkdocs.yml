@@ -1,0 +1,29 @@
+site_name: Powerview
+site_description: Electricity consumption analysis
+site_url: https://sunefibaek.github.io/powerview/
+repo_url: https://github.com/sunefibaek/powerview
+repo_name: sunefibaek/powerview
+
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Data and storage: data-and-storage.md
+  - Superset: superset.md
+#   - Development: development.md
+  - Reference: reference.md
