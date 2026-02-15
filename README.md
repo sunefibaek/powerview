@@ -11,7 +11,7 @@ git clone sunefibaek/powerview
 ```
 #### Initial Setup
 Copy .env.example to .env and insert your API key from Eloverblik. The key can be created by signing in with MitID and generating a key.\
-Copy the file metering_points.yml.example to metering_points.yml and insert the required metering point IDs in the file. Fill in `name`, `type`, `location`, and `description`. These fields are not used directly but are made available in the reporting layer.
+Copy the file metering_points.yml.example to metering_points.yml and insert the required metering point IDs in the file. Fill in `name`, `type`, `location`, `description`, and `price_area` (`DK1` - which covers Jutland and Funen -  or `DK2` - covering Sealand, Lolland-falster, Møn, and Bornholm). These fields are not used directly in ingestion but are made available in the reporting layer.
 #### Backfill
 The first run is used for back filling data. The amount of data fetched initially is defaulted to 90 days. The value can be changed in `.env` in the `INITIAL_BACKFILL_DAYS=90` parameter. The API has a cap of 730 days.\
 The run might take a fair bit of time depending on the amount of days.

@@ -33,6 +33,20 @@ cp metering_points.yml.example metering_points.yml
 
 Fill in `name`, `type`, `location`, and `description`. These fields are used for labeling in the reporting layer.
 
+The Danish energy market is separated into two independant bidding zones or price areas: DK1 (West) and DK2 (East). Set `price_area` to `DK1` or `DK2` for each metering point depending on the location they are in. `DK1` covers Jutland and Funen. `DK2` covers Sealand, Lolland-falster, Møn, and Bornholm.
+
+Example:
+
+```yaml
+metering_points:
+	"123234345":
+		name: Home Consumption
+		type: consumption
+		location: Home
+		description: Main household consumption
+		price_area: DK1
+```
+
 ## 3) Install dependencies
 
 The project uses Poetry:
