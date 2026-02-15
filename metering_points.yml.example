@@ -4,15 +4,18 @@ metering_points:
     type: production
     location: Home
     description: Electricity delivered to grid from solar panels
+    price_area: DK1
 
   "234345456":
     name: Grid Import
     type: consumption
     location: Home
     description: Electricity consumed from grid
+    price_area: DK1
 
   "345456567":
     name: Home Total
     type: consumption
     location: Home
     description: Total household consumption
+    price_area: DK1

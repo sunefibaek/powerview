@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
 
 DEFAULT_METERING_POINTS_FILE = "metering_points.yml"
+VALID_PRICE_AREAS = {"DK1", "DK2"}
 try:
     PACKAGE_ROOT = Path(__file__).resolve().parents[2]
 except IndexError:  # pragma: no cover - fallback for unusual packaging layouts
@@ -105,7 +106,29 @@ def load_metering_points(file_path: str | None = None) -> dict[str, dict[str, An
             )
 
         name = metadata.get("name") or mp_id_str
-        normalized[mp_id_str] = {**metadata, "id": mp_id_str, "name": name}
+        raw_price_area = metadata.get("price_area")
+        if raw_price_area is None:
+            price_area = "DK1"
+            logger.warning(
+                "Missing price_area for metering point '%s'. Defaulting to %s",
+                mp_id_str,
+                price_area,
+            )
+        else:
+            price_area = str(raw_price_area).strip().upper()
+            if price_area not in VALID_PRICE_AREAS:
+                valid_values = ", ".join(sorted(VALID_PRICE_AREAS))
+                raise ValueError(
+                    f"Invalid price_area '{raw_price_area}' for metering point "
+                    f"'{mp_id_str}'. Valid values: {valid_values}"
+                )
+
+        normalized[mp_id_str] = {
+            **metadata,
+            "id": mp_id_str,
+            "name": name,
+            "price_area": price_area,
+        }
 
     if not normalized:
         raise ValueError("At least one metering point ID must be configured")
