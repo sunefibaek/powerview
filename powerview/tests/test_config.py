@@ -32,6 +32,7 @@ class TestLoadConfig:
               "meter_001":
                 name: Solar Export
                 type: production
+                price_area: DK1
             """,
         )
 
@@ -43,6 +44,7 @@ class TestLoadConfig:
 
         assert config["refresh_token"] == "test_token_123"
         assert config["metering_points"]["meter_001"]["name"] == "Solar Export"
+        assert config["metering_points"]["meter_001"]["price_area"] == "DK1"
         assert config["valid_metering_points"]["Solar Export"] == "meter_001"
         assert config["data_storage_path"] == "./data"
         assert config["state_db_path"] == "./state.duckdb"
@@ -56,6 +58,7 @@ class TestLoadConfig:
             metering_points:
               "meter_001":
                 name: Solar Export
+                price_area: DK1
             """,
         )
 
@@ -94,8 +97,10 @@ class TestLoadConfig:
             metering_points:
               "meter_001":
                 name: Solar Export
+                price_area: DK1
               "meter_002":
                 name: Grid Import
+                price_area: DK2
             """,
         )
 
@@ -123,7 +128,8 @@ class TestLoadConfig:
             tmp_path,
             """
             metering_points:
-              "meter_001": {}
+              "meter_001":
+                price_area: DK1
             """,
         )
 
@@ -147,6 +153,7 @@ class TestConfigHelpers:
               "meter_001":
                 name: Solar Export
                 location: Home
+                price_area: DK1
             """,
             encoding="utf-8",
         )
@@ -156,6 +163,37 @@ class TestConfigHelpers:
         assert "meter_001" in result
         assert result["meter_001"]["name"] == "Solar Export"
         assert result["meter_001"]["id"] == "meter_001"
+        assert result["meter_001"]["price_area"] == "DK1"
+
+    def test_load_metering_points_missing_price_area_defaults_to_dk1(self, tmp_path):
+        file_path = tmp_path / "metering_points.yml"
+        file_path.write_text(
+            """
+            metering_points:
+              "meter_001":
+                name: Solar Export
+            """,
+            encoding="utf-8",
+        )
+
+        result = load_metering_points(str(file_path))
+
+        assert result["meter_001"]["price_area"] == "DK1"
+
+    def test_load_metering_points_invalid_price_area_raises_value_error(self, tmp_path):
+        file_path = tmp_path / "metering_points.yml"
+        file_path.write_text(
+            """
+            metering_points:
+              "meter_001":
+                name: Solar Export
+                price_area: DK3
+            """,
+            encoding="utf-8",
+        )
+
+        with pytest.raises(ValueError, match="Invalid price_area"):
+            load_metering_points(str(file_path))
 
     def test_normalize_path_relative_and_absolute(self, tmp_path, monkeypatch):
         monkeypatch.chdir(tmp_path)
